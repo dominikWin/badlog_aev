@@ -18,9 +18,13 @@ assert sheet.cell_value(2,0) == 'Reference Voltage'
 
 ref_voltage = float(sheet.cell_value(2, 1))
 
-data_start_x = 6
-data_start_y = 8
-data_width = 9
+data_main_start_x = 6
+data_main_start_y = 8
+data_main_width = 9
+
+data_raw_start_x = 0
+data_raw_start_y = 8
+data_raw_width = 5
 
 data = []
 
@@ -28,15 +32,22 @@ row = 0
 while True:
     try:
         data_row = []
-        for column in range(data_width):
+        # Main Data
+        for column in range(data_main_width):
             data_row.append(str(float(
-                sheet.cell_value(data_start_y+row, data_start_x+column))))
+                sheet.cell_value(data_main_start_y+row, data_main_start_x+column))))
+        data.append(data_row)
+
+        # Raw Data
+        for column in range(data_raw_width):
+            data_row.append(str(float(
+                sheet.cell_value(data_raw_start_y+row, data_raw_start_x+column))))
         data.append(data_row)
     except:
         break
     row += 1
 
-csv_text = "Time,Current,Voltage,Distance,Position,Speed,Input Power,Incremental Energy,Total Energy\n"
+csv_text = "Time,Current,Voltage,Distance,Position,Speed,Input Power,Incremental Energy,Total Energy,EEProm/Time,EEProm/Current,EEProm/Voltage,EEProm/Marks,EEProm/Relative Marks\n"
 
 for row in range(len(data)):
     row_values = data[row]
@@ -54,6 +65,11 @@ bl_topics = [
     {'name': "Input Power", 'unit': "W", 'attrs': []},
     {'name': "Incremental Energy", 'unit': "J", 'attrs': []},
     {'name': "Total Energy", 'unit': "J", 'attrs': []},
+    {'name': "EEProm/Time", 'unit': "ms", 'attrs': []},
+    {'name': "EEProm/Current", 'unit': "count", 'attrs': []},
+    {'name': "EEProm/Voltage", 'unit': "count", 'attrs': []},
+    {'name': "EEProm/Marks", 'unit': "wheel counts", 'attrs': []},
+    {'name': "EEProm/Relative Marks", 'unit': "wheel counts", 'attrs': []},
 ]
 
 bl_header = {'values': bl_values, 'topics': bl_topics}
